@@ -1,0 +1,20 @@
+[v-cloak] {
+  visibility: hidden;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.line {
+  fill: none;
+  stroke-width: 1.5px;
+  shape-rendering: geometricPrecision;
+}
+.bar {
+  stroke: #eee;
+  fill: #eee;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
