@@ -56,11 +56,12 @@ get '/machine-status.json' do
     cols = line.split(",")
     {
       time: cols[0],
-      status: cols[1],
-      cpu: cols[2].to_f,
-      ssd: cols[3].to_f,
-      room: cols[4].to_f,
-      humi: cols[5].to_f
+      hddstate: cols[1],
+      recording: cols[2],
+      cpu: cols[3].to_f,
+      ssd: cols[4].to_f,
+      room: cols[5].to_f,
+      humi: cols[6].to_f
     }
   })
 end

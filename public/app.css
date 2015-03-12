@@ -13,8 +13,14 @@
   shape-rendering: geometricPrecision;
 }
 .bar {
-  stroke: #eee;
-  fill: #eee;
   stroke-width: 1px;
   shape-rendering: crispEdges;
+}
+.bar.hddstate {
+  stroke: #eee;
+  fill: #eee;
+}
+.bar.recording {
+  stroke: #efe;
+  fill: #efe;
 }

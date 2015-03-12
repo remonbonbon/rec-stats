@@ -30,7 +30,7 @@ xAxisFormat = d3.time.format("%-m/%-d %-Hh")
 x = d3.time.scale().range([0, width])
 y = d3.scale.linear().range([height, 0])
 y2 = d3.scale.linear().range([height, 0])
-y_status = d3.scale.linear().range([height, 0])
+y_bar = d3.scale.linear().range([height, 0])
 xAxis = d3.svg.axis().scale(x).orient("bottom").tickFormat(xAxisFormat).ticks(10)
 yAxis = d3.svg.axis().scale(y).orient("right").ticks(20)
 y2Axis = d3.svg.axis().scale(y2).orient("left").tickFormat((d)-> d + '%')
@@ -53,7 +53,8 @@ $.ajax("machine-status.json", {
   success: (data)->
     for d in data
       d.time = parseDate(d.time)
-      d.status = if d.status == "standby" then 0 else 1
+      d.hddstate = if d.hddstate == "standby" then 0 else 1
+      d.recording = if d.recording == "standby" then 0 else 1
 
     x.domain(d3.extent(data, (d)-> d.time))
     y.domain([
@@ -62,18 +63,25 @@ $.ajax("machine-status.json", {
     ])
     # y2.domain(d3.extent(data, (d)-> d.humi))
     y2.domain([0, 100])
-    y_status.domain([0, 1])
+    y_bar.domain([0, 1])
 
-    # 状態のバー
     bar_width = (x(parseDate("2015-01-01 00:15:00")) - x(parseDate("2015-01-01 00:00:00")))
-    svg.selectAll(".bar")
+    # HDD状態のバー
+    svg.append("rect")
       .data(data)
-      .enter().append("rect")
-      .attr("class", "bar")
+      .attr("class", "bar hddstate")
       .attr("x", (d)-> x(d.time))
-      .attr("y", (d)-> y_status(d.status) - 1)
+      .attr("y", (d)-> y_bar(d.hddstate) - 1)
       .attr("width", bar_width)
-      .attr("height", (d)-> height - y_status(d.status))
+      .attr("height", (d)-> height - y_bar(d.hddstate))
+    # 録画状態のバー
+    svg.append("rect")
+      .data(data)
+      .attr("class", "bar recording")
+      .attr("x", (d)-> x(d.time))
+      .attr("y", (d)-> y_bar(d.recording) - 1)
+      .attr("width", bar_width)
+      .attr("height", (d)-> height - y_bar(d.recording))
 
     # CPU温度のグラフ
     svg.append("path")
