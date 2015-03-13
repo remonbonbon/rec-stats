@@ -53,35 +53,33 @@ $.ajax("machine-status.json", {
   success: (data)->
     for d in data
       d.time = parseDate(d.time)
-      d.hddstate = if d.hddstate == "standby" then 0 else 1
-      d.recording = if d.recording == "standby" then 0 else 1
+      d.hddstate = if d.hddstate == "standby" then 1 else 0
+      d.recording = if d.recording == "standby" then 1 else 0
 
     x.domain(d3.extent(data, (d)-> d.time))
     y.domain([
       d3.min(data, (d)-> d3.min([d.cpu, d.ssd, d.room])) - 0.5,
       d3.max(data, (d)-> d3.max([d.cpu, d.ssd, d.room])) + 0.5
     ])
-    # y2.domain(d3.extent(data, (d)-> d.humi))
     y2.domain([0, 100])
     y_bar.domain([0, 1])
 
     bar_width = (x(parseDate("2015-01-01 00:15:00")) - x(parseDate("2015-01-01 00:00:00")))
+    bar = svg.selectAll(".bar").data(data)
     # HDD状態のバー
-    svg.append("rect")
-      .data(data)
+    bar.enter().append("rect")
       .attr("class", "bar hddstate")
       .attr("x", (d)-> x(d.time))
-      .attr("y", (d)-> y_bar(d.hddstate) - 1)
+      .attr("y", 0)
       .attr("width", bar_width)
-      .attr("height", (d)-> height - y_bar(d.hddstate))
+      .attr("height", (d)-> y_bar(d.hddstate))
     # 録画状態のバー
-    svg.append("rect")
-      .data(data)
+    bar.enter().append("rect")
       .attr("class", "bar recording")
       .attr("x", (d)-> x(d.time))
-      .attr("y", (d)-> y_bar(d.recording) - 1)
+      .attr("y", 0)
       .attr("width", bar_width)
-      .attr("height", (d)-> height - y_bar(d.recording))
+      .attr("height", (d)-> y_bar(d.recording))
 
     # CPU温度のグラフ
     svg.append("path")
