@@ -35,13 +35,20 @@ xAxis = d3.svg.axis().scale(x).orient("bottom").tickFormat(xAxisFormat).ticks(10
 yAxis = d3.svg.axis().scale(y).orient("right").ticks(20)
 y2Axis = d3.svg.axis().scale(y2).orient("left").tickFormat((d)-> d + '%')
 color = d3.scale.category20c()
-  .domain(["cpu", "ssd", "room", null, "humi"])
+  .domain([
+    "cpu",
+    "ssd",
+    "room",
+    null,  # offset for orange color-zone
+    "diff",
+    "humi"])
 
 # グラフの線
 line_cpu  = d3.svg.line().interpolate("step-after").x((d)-> x(d.time)).y((d)-> y(d.cpu))
 line_ssd  = d3.svg.line().interpolate("step-after").x((d)-> x(d.time)).y((d)-> y(d.ssd))
 line_room = d3.svg.line().interpolate("step-after").x((d)-> x(d.time)).y((d)-> y(d.room))
 line_humi = d3.svg.line().interpolate("step-after").x((d)-> x(d.time)).y((d)-> y2(d.humi))
+line_diff = d3.svg.line().interpolate("step-after").x((d)-> x(d.time)).y((d)-> y2(d.cpu - d.room))
 
 svg = d3.select("#graph").append("svg")
   .attr("width", width + margin.left + margin.right)
@@ -89,11 +96,11 @@ $.ajax("machine-status.json", {
       .style("stroke", (d)-> color("cpu"))
 
     # SSD温度のグラフ
-    svg.append("path")
-      .datum(data)
-      .attr("class", "line")
-      .attr("d", line_ssd)
-      .style("stroke", (d)-> color("ssd"))
+    # svg.append("path")
+      # .datum(data)
+      # .attr("class", "line")
+      # .attr("d", line_ssd)
+      # .style("stroke", (d)-> color("ssd"))
 
     # 室温のグラフ
     svg.append("path")
@@ -101,6 +108,13 @@ $.ajax("machine-status.json", {
       .attr("class", "line")
       .attr("d", line_room)
       .style("stroke", (d)-> color("room"))
+
+    # CPUと室温の差分グラフ
+    svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line_diff)
+      .style("stroke", (d)-> color("diff"))
 
     # 湿度のグラフ
     svg.append("path")

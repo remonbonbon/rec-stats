@@ -17,10 +17,10 @@
   shape-rendering: crispEdges;
 }
 .bar.hddstate {
-  stroke: #eee;
-  fill: #eee;
+  stroke: #ddf;
+  fill: #ddf;
 }
 .bar.recording {
-  stroke: #efe;
-  fill: #efe;
+  stroke: #dfd;
+  fill: #dfd;
 }
