@@ -44,11 +44,11 @@ color = d3.scale.category20c()
     "humi"])
 
 # グラフの線
-line_cpu  = d3.svg.line().interpolate("step-after").x((d)-> x(d.time)).y((d)-> y(d.cpu))
-line_ssd  = d3.svg.line().interpolate("step-after").x((d)-> x(d.time)).y((d)-> y(d.ssd))
-line_room = d3.svg.line().interpolate("step-after").x((d)-> x(d.time)).y((d)-> y(d.room))
-line_humi = d3.svg.line().interpolate("step-after").x((d)-> x(d.time)).y((d)-> y2(d.humi))
-line_diff = d3.svg.line().interpolate("step-after").x((d)-> x(d.time)).y((d)-> y2(d.cpu - d.room))
+line_cpu  = d3.svg.line().interpolate("monotone").x((d)-> x(d.time)).y((d)-> y(d.cpu))
+line_ssd  = d3.svg.line().interpolate("basis").x((d)-> x(d.time)).y((d)-> y(d.ssd))
+line_room = d3.svg.line().interpolate("basis").x((d)-> x(d.time)).y((d)-> y(d.room))
+line_diff = d3.svg.line().interpolate("monotone").x((d)-> x(d.time)).y((d)-> y(d.cpu - d.room))
+line_humi = d3.svg.line().interpolate("basis").x((d)-> x(d.time)).y((d)-> y2(d.humi))
 
 svg = d3.select("#graph").append("svg")
   .attr("width", width + margin.left + margin.right)
@@ -65,8 +65,8 @@ $.ajax("machine-status.json", {
 
     x.domain(d3.extent(data, (d)-> d.time))
     y.domain([
-      d3.min(data, (d)-> d3.min([d.cpu, d.ssd, d.room])) - 0.5,
-      d3.max(data, (d)-> d3.max([d.cpu, d.ssd, d.room])) + 0.5
+      d3.min(data, (d)-> d3.min([d.cpu, d.ssd, d.room, d.cpu - d.room])) - 0.5,
+      d3.max(data, (d)-> d3.max([d.cpu, d.ssd, d.room, d.cpu - d.room])) + 0.5
     ])
     y2.domain([0, 100])
     y_bar.domain([0, 1])

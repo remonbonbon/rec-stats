@@ -51,7 +51,7 @@ get '/storage.json' do
 end
 
 get '/machine-status.json' do
-  temperature = `tail -n #{24 * 60 / 15 * 2} ../machine-check.csv`
+  temperature = `tail -n #{(24 * 60 / 15 * 1.5).round} ../machine-check.csv`
   json(temperature.split("\n").map{|line|
     cols = line.split(",")
     {
