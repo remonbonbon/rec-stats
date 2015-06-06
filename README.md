@@ -6,7 +6,6 @@ CPU・SSDの温度
 などを確認するための自分用Web UI
 
 ## installation
-
 1. Install ruby
 2. `gem install bundler`
 3. `bundle install --path vendor/bundler`
