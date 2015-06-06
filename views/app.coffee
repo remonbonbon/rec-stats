@@ -34,21 +34,18 @@ y_bar = d3.scale.linear().range([height, 0])
 xAxis = d3.svg.axis().scale(x).orient("bottom").tickFormat(xAxisFormat).ticks(10)
 yAxis = d3.svg.axis().scale(y).orient("right").ticks(20)
 y2Axis = d3.svg.axis().scale(y2).orient("left").tickFormat((d)-> d + '%')
-color = d3.scale.category20c()
-  .domain([
-    "cpu",
-    "hdd",
-    "room",
-    null,  # offset for orange color-zone
-    "diff",
-    "humi"])
+color = d3.scale.ordinal().range([
+  "#ff0000",  # cpu
+  "#ff5500",  # room
+  "#cc6600",  # diff
+  "#0000ff",  # humi
+]);
 
 # グラフの線
-line_cpu  = d3.svg.line().interpolate("monotone").x((d)-> x(d.time)).y((d)-> y(d.cpu))
-line_hdd  = d3.svg.line().interpolate("basis").x((d)-> x(d.time)).y((d)-> y(d.hdd))
-line_room = d3.svg.line().interpolate("basis").x((d)-> x(d.time)).y((d)-> y(d.room))
-line_diff = d3.svg.line().interpolate("monotone").x((d)-> x(d.time)).y((d)-> y(d.cpu - d.room))
-line_humi = d3.svg.line().interpolate("basis").x((d)-> x(d.time)).y((d)-> y2(d.humi))
+line_cpu  = d3.svg.line().interpolate("step-before").x((d)-> x(d.time)).y((d)-> y(d.cpu))
+line_room = d3.svg.line().interpolate("step-before").x((d)-> x(d.time)).y((d)-> y(d.room))
+line_diff = d3.svg.line().interpolate("step-before").x((d)-> x(d.time)).y((d)-> y(d.cpu - d.room))
+line_humi = d3.svg.line().interpolate("step-before").x((d)-> x(d.time)).y((d)-> y2(d.humi))
 
 svg = d3.select("#graph").append("svg")
   .attr("width", width + margin.left + margin.right)
@@ -63,14 +60,10 @@ $.ajax("machine-status.json", {
       d.hddstate = if d.hddstate == "standby" then 1 else 0
       d.recording = if d.recording == "standby" then 1 else 0
 
-    data_hdd = data.filter((d)-> d.hdd != null)
-    data_room = data.filter((d)-> d.room != null)
-    data_humi = data.filter((d)-> d.humi != null)
-
     x.domain(d3.extent(data, (d)-> d.time))
     y.domain([
-      d3.min(data, (d)-> d3.min([d.cpu, d.hdd, d.room, d.cpu - d.room])) - 0.5,
-      d3.max(data, (d)-> d3.max([d.cpu, d.hdd, d.room, d.cpu - d.room])) + 0.5
+      d3.min(data, (d)-> d3.min([d.cpu, d.room, d.cpu - d.room])) - 0.5,
+      d3.max(data, (d)-> d3.max([d.cpu, d.room, d.cpu - d.room])) + 0.5
     ])
     y2.domain([0, 100])
     y_bar.domain([0, 1])
@@ -99,33 +92,23 @@ $.ajax("machine-status.json", {
       .attr("d", line_cpu)
       .style("stroke", (d)-> color("cpu"))
 
-    # HDD温度のグラフ
-    svg.append("path")
-      .datum(data_hdd)
-      .filter((d)-> d.hdd != null)
-      .attr("class", "line")
-      .attr("d", line_hdd)
-      .style("stroke", (d)-> color("hdd"))
-
     # 室温のグラフ
     svg.append("path")
-      .datum(data_room)
-      .filter((d)-> d.room != null)
+      .datum(data)
       .attr("class", "line")
       .attr("d", line_room)
       .style("stroke", (d)-> color("room"))
 
     # CPUと室温の差分グラフ
     svg.append("path")
-      .datum(data_room)
+      .datum(data)
       .attr("class", "line")
       .attr("d", line_diff)
       .style("stroke", (d)-> color("diff"))
 
     # 湿度のグラフ
     svg.append("path")
-      .datum(data_humi)
-      .filter((d)-> d.humi != null)
+      .datum(data)
       .attr("class", "line")
       .attr("d", line_humi)
       .style("stroke", (d)-> color("humi"))

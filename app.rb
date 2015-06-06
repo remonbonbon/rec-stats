@@ -59,9 +59,8 @@ get '/machine-status.json' do
       recording: cols[1],
       hddstate: cols[2],
       cpu: cols[3].to_f,
-      hdd: (cols[4] == "") ? nil : cols[4].to_f,
-      room: (cols[5] == "") ? nil : cols[5].to_f,
-      humi: (cols[6] == "") ? nil : cols[6].to_f
+      room: (cols[4] == "") ? nil : cols[4].to_f,
+      humi: (cols[5] == "") ? nil : cols[5].to_f
     }
   })
 end
