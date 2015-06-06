@@ -49,3 +49,6 @@ DEPENDENCIES
   sinatra-contrib
   therubyracer
   thin
+
+BUNDLED WITH
+   1.10.3

@@ -1,6 +1,7 @@
-.bundle
-bundle
-log
-tmp
+/.bundle
+/bundle
+/vendor
+/log
+/tmp
 /cron.csv
 /cron.log

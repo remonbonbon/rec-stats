@@ -34,10 +34,10 @@ else:
 # USBRH
 usb_temp = ""
 usb_humi = ""
-# usbrh = commands.getoutput("sudo usbrh")
-# match = re.search(r"([0-9\-.]+) ([0-9\-.]+)", usbrh)
-# if match:
-#   usb_temp = match.group(1).strip()
-#   usb_humi = match.group(2).strip()
+usbrh = commands.getoutput("sudo usbrh")
+match = re.search(r"([0-9\-.]+) ([0-9\-.]+)", usbrh)
+if match:
+  usb_temp = match.group(1).strip()
+  usb_humi = match.group(2).strip()
 
 print timestamp + "," + recording_state + "," + hdd_state + "," + cpu_temp + "," + hdd_temp + "," + usb_temp + "," + usb_humi

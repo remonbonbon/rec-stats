@@ -51,17 +51,17 @@ get '/storage.json' do
 end
 
 get '/machine-status.json' do
-  temperature = `tail -n 100 ./stats.csv`
+  temperature = `tail -n 150 ./cron.csv`
   json(temperature.split("\n").map{|line|
-    cols = line.split(",")
+    cols = line.split(",", -1)
     {
       time: cols[0],
       recording: cols[1],
       hddstate: cols[2],
       cpu: cols[3].to_f,
-      hdd: cols[4].to_f,
-      room: cols[5].to_f,
-      humi: cols[6].to_f
+      hdd: (cols[4] == "") ? nil : cols[4].to_f,
+      room: (cols[5] == "") ? nil : cols[5].to_f,
+      humi: (cols[6] == "") ? nil : cols[6].to_f
     }
   })
 end
