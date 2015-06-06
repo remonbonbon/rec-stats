@@ -14,5 +14,5 @@ CPU・HDDの温度
 ## crontab
 
 ~~~
-*/10 * * * * cd ~/rec-stats && ./cron.sh >> cron.csv 2>> cron.log
+*/10 * * * * cd ~/rec-stats && ./cron.py >> cron.csv 2>> cron.log
 ~~~
