@@ -17,7 +17,7 @@ get '/app.js' do
 end
 
 get '/reserves.json' do
-	json(JSON.parse(File.open('../reserves.json').read).map{|reserve|
+	json(JSON.parse(File.open('../chinachu/data/reserves.json').read).map{|reserve|
     time = Time.at(reserve["start"] / 1000)
     title = reserve["title"]
     episode = reserve["episode"]
@@ -34,7 +34,7 @@ end
 
 get '/storage.json' do
   df = `df --block-size=1G /record`
-  if %r{/dev/sda1\s+\d+\s+(\d+)\s+(\d+)}.match(df)
+  if %r{/dev/[a-z0-9]+\s+\d+\s+(\d+)\s+(\d+)}.match(df)
     used = $1.to_i
     free = $2.to_i
     total = used + free
@@ -51,15 +51,15 @@ get '/storage.json' do
 end
 
 get '/machine-status.json' do
-  temperature = `tail -n #{(24 * 60 / 15 * 1.5).round} ../machine-check.csv`
+  temperature = `tail -n 100 ./stats.csv`
   json(temperature.split("\n").map{|line|
     cols = line.split(",")
     {
       time: cols[0],
-      hddstate: cols[1],
-      recording: cols[2],
+      recording: cols[1],
+      hddstate: cols[2],
       cpu: cols[3].to_f,
-      ssd: cols[4].to_f,
+      hdd: cols[4].to_f,
       room: cols[5].to_f,
       humi: cols[6].to_f
     }

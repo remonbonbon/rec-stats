@@ -2,3 +2,5 @@
 bundle
 log
 tmp
+/cron.csv
+/cron.log
