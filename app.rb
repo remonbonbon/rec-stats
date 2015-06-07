@@ -51,7 +51,7 @@ get '/storage.json' do
 end
 
 get '/machine-status.json' do
-  temperature = `tail -n 150 ./cron.csv`
+  temperature = `tail -n 200 ./cron.csv`
   json(temperature.split("\n").map{|line|
     cols = line.split(",", -1)
     {
