@@ -16,7 +16,7 @@ if 2 < recording_size:
 	recording_state = "recording"
 
 # HDD state
-hdparm = commands.getoutput("sudo hdparm -C /dev/sdb")
+hdparm = commands.getoutput("sudo hdparm -C /dev/disk/by-uuid/e297668b-f29c-494a-8836-0d40aedd5c37")
 hdd_state = re.search(r"drive state is\:[ ]+(.+)", hdparm).group(1).strip()
 
 # CPU temperature
